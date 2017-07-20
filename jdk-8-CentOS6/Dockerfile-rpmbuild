@@ -1,0 +1,27 @@
+FROM docker.rp-core.com/rp_centos_6.7_rpm_build
+
+# docker build -t my_maven:3.3.9-jdk8-c67 . -f Dockerfiler-rpmbuild
+# docker run -it --rm --name mvn-$$ -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven my_maven:3.3.9-jdk8-c67 mvn clean ...
+
+ARG MAVEN_VERSION=3.3.9
+ARG USER_HOME_DIR="/root"
+
+# install Java
+RUN yum install -y jre
+ENV JAVA_HOME /usr/java/jre1.8.0_60
+
+# install Maven
+RUN yum install -y apache-maven-mvn
+RUN ln -s /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
+
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# copy 2 files into Docker image
+COPY mvn-entrypoint.sh /usr/local/bin/mvn-entrypoint.sh
+COPY settings-docker.xml /usr/share/maven/ref/
+
+VOLUME "$USER_HOME_DIR/.m2"
+
+ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]
+CMD ["mvn"]
