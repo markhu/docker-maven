@@ -28,6 +28,11 @@ passing a Maven command to `docker run`:
 
     docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install
 
+## Building local Docker image(s)
+
+This is a base image that you can extend, so it has the bare minimum packages needed. After adding your custom package(s) to the `Dockerfile`, you can build your local Docker image like this:
+
+    docker build --tag my_local_maven:3.5.0-jdk-8_rpm .
 
 # Reusing the Maven local repository
 
